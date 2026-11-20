@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ProjectSync</string>
+    <string name="company_home">Company Home</string>
+    <string name="log_out">Log out</string>
+    <string name="no_projects_yet">No projects yet</string>
+    <string name="innovator_home">Innovator Home</string>
+    <string name="log_in_to_continue">Log in to continue</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="don_t_have_an_account_create_one">Don\'t have an account? Create one</string>
+    <string name="create_account">Create account</string>
+    <string name="join_as_an_innovator_or_a_company">Join as an innovator OR a company</string>
+    <string name="full_name">Full name</string>
+    <string name="password_at_least_6_characters">Password (at least 6 characters)</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="i_am_a">I am a…</string>
+    <string name="innovator">Innovator</string>
+    <string name="company">Company</string>
+    <string name="choose_innovator_or_company">Choose Innovator or Company</string>
+    <string name="already_have_an_account_log_in">Already have an account? Log in</string>
+</resources>

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "872043430492",
+    "firebase_url": "https://projectsyncc-674d0-default-rtdb.firebaseio.com",
+    "project_id": "projectsyncc-674d0",
+    "storage_bucket": "projectsyncc-674d0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872043430492:android:88196837abd3edffa3dc99",
+        "android_client_info": {
+          "package_name": "com.example.projectsync"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0dX81h-2kWNJmXkKBXsUfbguM0wkdGb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
