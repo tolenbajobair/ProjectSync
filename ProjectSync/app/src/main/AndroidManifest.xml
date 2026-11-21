@@ -37,6 +37,13 @@
             android:name=".CompanyHomeActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".SubmitProjectActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ProjectDetailsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

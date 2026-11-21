@@ -9,6 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class CompanyHomeActivity extends AppCompatActivity {
@@ -29,6 +30,18 @@ public class CompanyHomeActivity extends AppCompatActivity {
         // Feed
         feed = new ProjectFeed(this);
         feed.start();
+
+        // Tabs: first = all projects, second = projects this company adopted
+        TabLayout tabs = findViewById(R.id.feedTabs);
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override public void onTabSelected(TabLayout.Tab tab) {
+                feed.setFilter(tab.getPosition() == 0
+                        ? ProjectFeed.Filter.ALL
+                        : ProjectFeed.Filter.ADOPTED_BY_ME);
+            }
+            @Override public void onTabUnselected(TabLayout.Tab tab) { }
+            @Override public void onTabReselected(TabLayout.Tab tab) { }
+        });
 
         // Logout
         findViewById(R.id.logoutButton).setOnClickListener(v -> {

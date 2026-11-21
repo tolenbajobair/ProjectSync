@@ -14,7 +14,17 @@ import java.util.List;
 
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHolder> {
 
+    /** Called when the user taps a project card. */
+    public interface OnProjectClickListener {
+        void onProjectClick(Project project);
+    }
+
+    private final OnProjectClickListener clickListener;
     private List<Project> projects = new ArrayList<>();
+
+    public ProjectAdapter(OnProjectClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
@@ -40,16 +50,21 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
         String time = DateUtils.getRelativeTimeSpanString(
                 p.getCreatedAt(), System.currentTimeMillis(),
                 DateUtils.MINUTE_IN_MILLIS).toString();
-        String status = p.isAdopted() ? "Adopted" : "Not adopted";
+        String status = holder.itemView.getContext().getString(
+                p.isAdopted() ? R.string.status_adopted : R.string.status_not_adopted);
 
         StringBuilder meta = new StringBuilder();
         if (p.getField() != null && !p.getField().isEmpty()) {
             meta.append(p.getField()).append(" • ");
         }
-        meta.append("by ").append(p.getAuthorName())
+        meta.append(holder.itemView.getContext().getString(R.string.by_author, p.getAuthorName()))
                 .append(" • ").append(time)
                 .append(" • ").append(status);
         holder.meta.setText(meta.toString());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (clickListener != null) clickListener.onProjectClick(p);
+        });
     }
 
     @Override

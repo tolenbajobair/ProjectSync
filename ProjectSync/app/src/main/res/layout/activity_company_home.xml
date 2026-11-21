@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -38,6 +39,25 @@
             android:layout_height="wrap_content"
             android:text="@string/log_out" />
     </LinearLayout>
+
+    <!-- Tabs: filter the feed -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/feedTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="#009688"
+        app:tabSelectedTextColor="#009688">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all_projects" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/adopted_by_me" />
+    </com.google.android.material.tabs.TabLayout>
 
     <!-- Feed -->
     <FrameLayout

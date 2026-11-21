@@ -19,4 +19,49 @@
     <string name="company">Company</string>
     <string name="choose_innovator_or_company">Choose Innovator or Company</string>
     <string name="already_have_an_account_log_in">Already have an account? Log in</string>
+
+    <!-- Story 3: Project Submission & Feed -->
+    <string name="submit_project">Submit project</string>
+    <string name="submit_project_hint">Share your idea so companies can discover it in the feed.</string>
+    <string name="project_title">Project title</string>
+    <string name="project_field">Field</string>
+    <string name="project_description">Description</string>
+    <string name="submit">Submit</string>
+    <string name="project_submitted">Project submitted successfully</string>
+    <string name="could_not_submit">Could not submit project: %1$s</string>
+    <string name="please_log_in_again">Please log in again</string>
+    <string name="could_not_load_projects">Could not load projects: %1$s</string>
+    <string name="project_details">Project details</string>
+    <string name="project_not_found">This project no longer exists</string>
+    <string name="could_not_load_project">Could not load project: %1$s</string>
+    <string name="by_author">by %1$s</string>
+    <string name="submitted_on">Submitted on %1$s</string>
+    <string name="status_adopted">Adopted</string>
+    <string name="status_not_adopted">Not adopted yet</string>
+    <string name="all_projects">All projects</string>
+    <string name="adopted_by_me">Adopted by me</string>
+    <string name="no_adopted_projects">You haven\'t adopted any projects yet</string>
+    <string name="status_adopted_by">Adopted by %1$s</string>
+    <string name="mark_as_adopted">Mark as adopted</string>
+    <string name="mark_as_not_adopted">Mark as not adopted</string>
+    <string name="project_adopted">Project marked as adopted</string>
+    <string name="adoption_removed">Adoption removed</string>
+    <string name="could_not_update">Could not update project: %1$s</string>
+    <string name="delete_project">Delete project</string>
+    <string name="delete_project_confirm">This will permanently remove the project from the feed.</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="project_deleted">Project deleted</string>
+    <string name="could_not_delete">Could not delete project: %1$s</string>
+
+    <string-array name="project_fields">
+        <item>Technology</item>
+        <item>Health</item>
+        <item>Education</item>
+        <item>Environment</item>
+        <item>Finance</item>
+        <item>Agriculture</item>
+        <item>Energy</item>
+        <item>Other</item>
+    </string-array>
 </resources>

@@ -1,35 +1,55 @@
 package com.example.projectsync;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+/**
+ * Shows projects from Firestore, newest first. Shared by the Innovator and Company home screens.
+ * The company home can filter it to show only the projects that company adopted.
+ */
 public class ProjectFeed {
 
-    private final ProjectAdapter adapter = new ProjectAdapter();
+    public enum Filter { ALL, ADOPTED_BY_ME }
+
+    private final Activity activity;
+    private final ProjectAdapter adapter;
     private final ProgressBar progress;
     private final TextView empty;
-    private final Query query = FirebaseDatabase.getInstance()
-            .getReference("projects")
-            .orderByChild("createdAt");
-    private ValueEventListener listener;
+    private final Query query = FirebaseFirestore.getInstance()
+            .collection(Project.COLLECTION)
+            .orderBy("createdAt", Query.Direction.DESCENDING);
+    private ListenerRegistration registration;
+
+    private List<Project> allProjects = new ArrayList<>();
+    private Filter filter = Filter.ALL;
+    private boolean loaded = false;
 
     public ProjectFeed(Activity activity) {
+        this.activity = activity;
+
+        // Tapping a project opens its details screen
+        adapter = new ProjectAdapter(project -> {
+            Intent intent = new Intent(activity, ProjectDetailsActivity.class);
+            intent.putExtra(ProjectDetailsActivity.EXTRA_PROJECT_ID, project.getId());
+            activity.startActivity(intent);
+        });
+
         RecyclerView list = activity.findViewById(R.id.feedList);
         list.setLayoutManager(new LinearLayoutManager(activity));
         list.setAdapter(adapter);
@@ -37,39 +57,58 @@ public class ProjectFeed {
         empty = activity.findViewById(R.id.feedEmpty);
     }
 
-    /** Starts listening: the list updates by itself whenever a project is added. */
+    /** Starts listening: the list updates by itself whenever a project is added or changed. */
     public void start() {
-        listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Project> projects = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    Project p = child.getValue(Project.class);
-                    if (p != null) {
-                        p.setId(child.getKey());
-                        projects.add(p);
-                    }
-                }
-                Collections.reverse(projects); // newest first
-                adapter.setProjects(projects);
-                progress.setVisibility(View.GONE);
-                empty.setVisibility(projects.isEmpty() ? View.VISIBLE : View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                progress.setVisibility(View.GONE);
-                empty.setText("Could not load projects: " + error.getMessage());
+        registration = query.addSnapshotListener((snapshot, error) -> {
+            progress.setVisibility(View.GONE);
+            if (error != null) {
+                adapter.setProjects(new ArrayList<>());
+                empty.setText(activity.getString(R.string.could_not_load_projects, error.getMessage()));
                 empty.setVisibility(View.VISIBLE);
+                return;
             }
-        };
-        query.addValueEventListener(listener);
+            List<Project> projects = new ArrayList<>();
+            if (snapshot != null) {
+                for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                    Project p = doc.toObject(Project.class);
+                    if (p != null) projects.add(p);
+                }
+            }
+            allProjects = projects;
+            loaded = true;
+            show();
+        });
+    }
+
+    /** Changes which projects are shown (called when the user switches tabs). */
+    public void setFilter(Filter filter) {
+        this.filter = filter;
+        if (loaded) show();
+    }
+
+    private void show() {
+        FirebaseUser current = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = current == null ? "" : current.getUid();
+
+        List<Project> shown = new ArrayList<>();
+        for (Project p : allProjects) {
+            if (filter == Filter.ALL
+                    || (filter == Filter.ADOPTED_BY_ME && p.isAdopted() && uid.equals(p.getAdoptedById()))) {
+                shown.add(p);
+            }
+        }
+        adapter.setProjects(shown);
+
+        empty.setText(filter == Filter.ADOPTED_BY_ME
+                ? R.string.no_adopted_projects : R.string.no_projects_yet);
+        empty.setVisibility(shown.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     /** Stops listening (call when the screen closes). */
     public void stop() {
-        if (listener != null) query.removeEventListener(listener);
+        if (registration != null) {
+            registration.remove();
+            registration = null;
+        }
     }
-
-
 }

@@ -30,6 +30,9 @@ public class InnovatorHomeActivity extends AppCompatActivity {
         feed = new ProjectFeed(this);
         feed.start();
 
+        // Submit a new project (Story 3)
+        findViewById(R.id.submitProjectButton).setOnClickListener(v ->
+                startActivity(new Intent(this, SubmitProjectActivity.class)));
 
         // Logout
         findViewById(R.id.logoutButton).setOnClickListener(v -> {

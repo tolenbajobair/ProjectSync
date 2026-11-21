@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Story 3 – projects
+    match /projects/{projectId} {
+      // Any logged-in user (innovator or company) can read the feed and details
+      allow read: if request.auth != null;
+
+      // A logged-in user can only create a project in their own name,
+      // with a non-empty title/description and adopted = false
+      allow create: if request.auth != null
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.title is string
+                    && request.resource.data.title.size() > 0
+                    && request.resource.data.title.size() <= 80
+                    && request.resource.data.desc is string
+                    && request.resource.data.desc.size() > 0
+                    && request.resource.data.desc.size() <= 1000
+                    && request.resource.data.adopted == false;
+
+      // Adoption: only the three adoption fields may change.
+      //  - Adopt: the project is not adopted yet, it isn't the user's own project,
+      //    and the user puts their own id as the adopter.
+      //  - Undo: only the company that adopted it can set it back to not adopted.
+      // (The app shows the Adopt button to companies only.)
+      allow update: if request.auth != null
+                    && request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['adopted', 'adoptedById', 'adoptedByName'])
+                    && (
+                         (resource.data.adopted == false
+                          && resource.data.authorId != request.auth.uid
+                          && request.resource.data.adopted == true
+                          && request.resource.data.adoptedById == request.auth.uid)
+                       ||
+                         (resource.data.adopted == true
+                          && resource.data.adoptedById == request.auth.uid
+                          && request.resource.data.adopted == false
+                          && request.resource.data.adoptedById == null)
+                       );
+
+      // Only the author can delete their own project
+      allow delete: if request.auth != null
+                    && resource.data.authorId == request.auth.uid;
+    }
+  }
+}
